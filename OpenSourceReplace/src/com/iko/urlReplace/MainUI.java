@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Insets;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -25,8 +26,10 @@ public class MainUI extends JFrame {
 	private JTextField replaceStr;
 	private JButton folderPick;
 	private JButton multiPick;
+	private JButton mapButton;
+	private JButton unmapButton;
 	private JProgressBar progressBar;
-	private JTextArea taskOutput;
+	private static JTextArea taskOutput;
 	private TaskForThing taskWorker;
 	private File pickedFolder;
 	private File[] multiFiles;
@@ -49,7 +52,7 @@ public class MainUI extends JFrame {
 		 */
 		@Override
 		public Void doInBackground() throws Exception {
-			////System.out.println("running tasks");
+			//System.out.println("running tasks");
 			taskOutput.setText(""); //clear the text box
 			progressBar.setIndeterminate(false);
 			folderPick.setEnabled(false);
@@ -176,37 +179,76 @@ public class MainUI extends JFrame {
 		c.weightx = 0.5; //share the space
 
 		JLabel newLabel;
+		
+//		newLabel = new JLabel("-2");
+//		c.gridx = 0;
+//		c.gridy = -2;
+//		cp.add(newLabel, c);
+		
+		newLabel = new JLabel("Pick a Site to Map");
+		c.gridx = 0;
+		c.gridy = 0;
+		cp.add(newLabel, c);
+		
+		String[] siteList = {
+				"BA: Calgary",
+				"CA: Kankakee",
+				"GA: Wilmington",
+				"GC: Sumas",
+				"GE: Ashcroft",
+				"GH: Hawkesbury",
+				"GI: Madoc",
+				"GV: Texas/SouthWest",
+				"PBM: Senica/Sloviakia",
+				"GK: IG Brampton",
+				"GS: Sylacauga",
+				"GR: BramCal",
+		};
+		
+		JComboBox<String> siteDrop = new JComboBox<String>(siteList);
+		siteDrop.setEditable(false);
+		c.gridx = 1;
+		cp.add(siteDrop, c);
+		
+		mapButton = new JButton("Map");
+		c.gridx = 0;
+		c.gridy++;
+		cp.add(mapButton,c);
+		
+		unmapButton = new JButton("Unmap");
+		c.gridx = 1;
+		cp.add(unmapButton,c);
 
 		newLabel = new JLabel("Enter String to find:");
 		c.gridx = 0;
-		c.gridy = 0;
+		c.gridy++;
 		cp.add(newLabel, c);
 
 		searchStr = new JTextField();
 		searchStr.setEditable(true);
 		c.gridx = 1;
-		c.gridy = 0;
+//		c.gridy = 2;
 		cp.add(searchStr, c);
 
 		newLabel = new JLabel("Enter String to replace with:");
 		c.gridx = 0;
-		c.gridy = 1;
+		c.gridy++;
 		cp.add(newLabel, c);
 
 		replaceStr = new JTextField();
 		replaceStr.setEditable(true);
 		c.gridx = 1;
-		c.gridy = 1;
+//		c.gridy = 3;
 		cp.add(replaceStr, c);
 
 		folderPick = new JButton("Pick Folder");
 		c.gridx = 0;
-		c.gridy = 2;
+		c.gridy++;
 		cp.add(folderPick,c);
 
 		multiPick = new JButton("Select Multiple Files");
 		c.gridx = 1;
-		c.gridy = 2;
+//		c.gridy = 4;
 		cp.add(multiPick,c);
 
 		progressBar = new JProgressBar(0, 100);
@@ -214,7 +256,7 @@ public class MainUI extends JFrame {
 		progressBar.setIndeterminate(true);
 		progressBar.setStringPainted(true);
 		c.gridx = 0;
-		c.gridy = 3;
+		c.gridy++;
 		c.gridwidth = 2;
 		cp.add(progressBar,c);
 
@@ -222,7 +264,7 @@ public class MainUI extends JFrame {
 		taskOutput = new JTextArea();
 		taskOutput.setEditable(false);
 		c.gridx = 0;
-		c.gridy = 4;
+		c.gridy++;
 		c.gridwidth = 2;
 		c.ipady = 40;
 		c.weighty = 1.0;
@@ -234,6 +276,31 @@ public class MainUI extends JFrame {
 
 		// Allocate an anonymous instance of an anonymous inner class that
 		//  implements ActionListener as ActionEvent listener
+		
+		mapButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent evt) {
+				try {
+					MapSharepoint.map(siteDrop.getSelectedIndex());
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
+		
+		unmapButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent evt) {
+				try {
+					MapSharepoint.unmap();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		});
+		
 		folderPick.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent evt) {
@@ -283,4 +350,10 @@ public class MainUI extends JFrame {
 			}
 		});
 	}
+
+	public static void addText(String textInput) {
+		taskOutput.append(textInput.concat("haha\n"));
+		System.out.println("added: ".concat(textInput));
+	}
+
 }

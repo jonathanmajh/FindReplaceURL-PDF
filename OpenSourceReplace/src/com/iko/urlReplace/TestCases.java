@@ -9,4 +9,8 @@ public class TestCases {
 		FolderPicked.main("C:\\Users\\majona\\Desktop\\DNATools\\CA", "event", "It worked!!!");
 	}
 
+//	public void mappingTest() throws Exception {
+//		MapSharepoint.map("GH");
+//	}
+
 }
