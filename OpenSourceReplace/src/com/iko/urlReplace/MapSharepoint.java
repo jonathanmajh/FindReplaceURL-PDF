@@ -53,7 +53,7 @@ public class MapSharepoint {
 //			System.out.println(cmdOut.length());
 			if (cmdOut.length() > 0) {
 				MainUI.addText(cmdOut);
-				
+//				MainUI.remoteSetProgress(50);
 			}
 		}
 	}

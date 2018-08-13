@@ -1,7 +1,6 @@
 package com.iko.urlReplace;
 import java.awt.*;       // Using AWT layouts
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.List;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -28,12 +27,12 @@ public class MainUI extends JFrame {
 	private JButton multiPick;
 	private JButton mapButton;
 	private JButton unmapButton;
-	private JProgressBar progressBar;
+	private static JProgressBar progressBar;
 	private static JTextArea taskOutput;
 	private TaskForThing taskWorker;
 	private File pickedFolder;
 	private File[] multiFiles;
-	private int fileCount; 
+	private static int fileCount; 
 	private boolean isFolder;
 
 	static class FileProgressInfo { //this data type is used for passing progress information
@@ -59,74 +58,20 @@ public class MainUI extends JFrame {
 			multiPick.setEnabled(false);
 
 			if (isFolder) {
-				////System.out.println("going through folder");
-				String folderPdf = pickedFolder.getPath();
-				String findStr = searchStr.getText();
-				if (!folderPdf.endsWith("\\")) {
-					folderPdf = folderPdf.concat("\\");
-				}
-				////System.out.println(folderPdf);
-				File workingFolder = new File(folderPdf);
-				if (workingFolder.exists()){
-					File[] fileList = workingFolder.listFiles(new FilenameFilter() {
-						@Override
-						public boolean accept(File workingFolder, String name) {
-							return name.toLowerCase().endsWith(".pdf");
-						}
-					});
-					File pushFolder = new File(folderPdf.concat("push\\"));
-					if (!pushFolder.exists()) {
-						pushFolder.mkdir();
-						////System.out.println("Making Dir");
-					}
-
-					fileCount = fileList.length;
-					for (int i = 0; i < fileCount; i++) {
-						////System.out.println(fileList[i]);
-						String fileName = fileList[i].getName(); 
-						int linksReplaced = ReplaceLinks.main(fileName, folderPdf, findStr, replaceStr.getText());
-						publish(new MainUI.FileProgressInfo(i, linksReplaced, fileName));
-						if (linksReplaced > 0) {
-							//System.out.println("File Changed");
-						}else {
-							//System.out.println("File Didn't Change, Delete");
-							File deleteFile = new File(folderPdf.concat("push\\").concat(fileName));
-							if (!deleteFile.delete()) {
-								//System.out.println("Problem Deleting File");
-							}
-						}
-					}
-				}
+				FolderPicked.main(pickedFolder.getPath(), searchStr.getText(), replaceStr.getText());
 			}else{
 				//System.out.println("trying individual files");
 				fileCount = multiFiles.length;
 				//System.out.println(fileCount);
 				if (fileCount > 0) {
-					String theFolder = multiFiles[0].getParent().concat("\\");
-					File pushFolder = new File(theFolder.concat("push\\"));
-					int filesDone = 0;
-
-					if (!pushFolder.exists()) {
-						pushFolder.mkdir();
-						//System.out.println("Making Dir");
-					}
-					for (File thisFile : multiFiles) {
-						filesDone++;
-						int linksReplaced = ReplaceLinks.main(thisFile.getName(), theFolder, searchStr.getText(), replaceStr.getText());
-						if (linksReplaced > 0) {
-							//System.out.println("success");
-						}else {
-							//System.out.println("Failure");
-						}
-						publish(new MainUI.FileProgressInfo(filesDone, linksReplaced, thisFile.getName()));
-					}
+					FilesPicked.main(multiFiles, searchStr.getText(), replaceStr.getText());
 				}else {
-					//System.out.println("no file selected");
-				}
+				//System.out.println("no file selected");
 			}
-			//System.out.println("complete");
-			return null;
 		}
+		//System.out.println("complete");
+		return null;
+	}
 		protected void process(List<FileProgressInfo> pairs) {
 			FileProgressInfo pair = pairs.get(pairs.size() - 1);
 			progressBar.setValue(pair.files*100/fileCount);
@@ -354,6 +299,19 @@ public class MainUI extends JFrame {
 	public static void addText(String textInput) {
 		taskOutput.append(textInput.concat("haha\n"));
 		System.out.println("added: ".concat(textInput));
+	}
+
+	public static void remoteSetProgress(FileProgressInfo pairs) {
+//			FileProgressInfo pair = pairs.get(pairs.size() - 1);
+			progressBar.setValue(pairs.files*100/fileCount);
+//			System.out.println(pairs.fileName);
+			taskOutput.append(pairs.fileName);
+			taskOutput.append(" ".concat(Long.toString(pairs.linksThisFile)));
+			taskOutput.append(" Links Replaced.\n");
+	}
+	
+	public static void setFileCount(int fileCountRemote) {
+		fileCount = fileCountRemote;
 	}
 
 }

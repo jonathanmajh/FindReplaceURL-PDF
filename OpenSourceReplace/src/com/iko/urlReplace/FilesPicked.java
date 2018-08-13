@@ -9,15 +9,18 @@ public class FilesPicked {
 		File pushFolder = new File(theFolder.concat("push\\"));
 		if (!pushFolder.exists()) {
 			pushFolder.mkdir();
-			System.out.println("Making Dir");
+//			System.out.println("Making Dir");
 		}
+		int filesDone = 0;
 		for (File thisFile : multiFiles) {
+			filesDone++;
 			int linksReplaced = ReplaceLinks.main(thisFile.getName(), theFolder, findStr, replaceStr);
 			if (linksReplaced > 0) {
-				System.out.println("success");
+//				System.out.println("success");
 			}else {
-				System.out.println("Failure");
+//				System.out.println("Failure");
 			}
+			MainUI.remoteSetProgress(new MainUI.FileProgressInfo(filesDone, linksReplaced, thisFile.getName()));
 //			publish(new MainUI.filesDonePair(filesDone, linksReplaced));
 		}
 	}
