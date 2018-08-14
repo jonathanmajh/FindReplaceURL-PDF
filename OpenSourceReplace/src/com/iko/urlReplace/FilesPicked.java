@@ -13,6 +13,12 @@ public class FilesPicked {
 		}
 		int filesDone = 0;
 		for (File thisFile : multiFiles) {
+			
+	        if (Thread.interrupted()) {
+	            // Oh Shit! We've been interrupted...GTFO
+	            return;
+	        }
+	        
 			filesDone++;
 			int linksReplaced = ReplaceLinks.main(thisFile.getName(), theFolder, findStr, replaceStr, theFolder.concat("\\push"));
 			if (linksReplaced > 0) {

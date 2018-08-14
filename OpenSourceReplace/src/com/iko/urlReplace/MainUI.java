@@ -36,6 +36,7 @@ public class MainUI extends JFrame {
 	private JButton mapButton;
 	private JButton unmapButton;
 	private JButton startButton;
+	private JButton stopButton;
 	private static JProgressBar progressBar;
 	private static JTextArea taskOutput;
 	private TaskForThing taskWorker;
@@ -68,6 +69,7 @@ public class MainUI extends JFrame {
 			folderPick.setEnabled(false);
 			multiPick.setEnabled(false);
 			startButton.setEnabled(false);
+			stopButton.setEnabled(true);
 
 			if (isFolder == 0) {
 				FolderPicked.main(pickedFolder.getPath(), searchStr.getText(), replaceStr.getText(), "");
@@ -137,6 +139,7 @@ public class MainUI extends JFrame {
 			multiPick.setEnabled(true);
 			startButton.setEnabled(true);
 			progressBar.setIndeterminate(true);
+			stopButton.setEnabled(false);
 			progressBar.setValue(0);
 			statusLabel.setText("Waiting for User Input...");
 			taskOutput.append("Done!\n");
@@ -280,11 +283,16 @@ public class MainUI extends JFrame {
 		startButton = new JButton("Start");
 		c2.gridx = 0;
 		c2.gridy = 0;
-		c2.weightx = 1.0;
+		c2.weightx = 0.5;
 		c2.weighty = 1.0;
 		c2.insets = new Insets(0, 0, 0, 0);
 		autoOps.add(startButton, c2);
 		
+		stopButton = new JButton("Stop");
+		stopButton.setEnabled(false);
+		c2.gridx = 2;
+		c2.gridy = 0;
+		autoOps.add(stopButton, c2);
 		
 		tabbedPane.addTab("Automatic", null, autoOps, "Pick a Site, then Specific the Strings");
 		tabbedPane.addTab("Manual", null, manOps, "Options for manually Updating PDFs");
@@ -318,6 +326,19 @@ public class MainUI extends JFrame {
 				isFolder = 2;
 				taskWorker = new TaskForThing();
 				taskWorker.execute();
+			}
+		});
+		
+		stopButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent evt) {
+				folderPick.setEnabled(true);
+				multiPick.setEnabled(true);
+				startButton.setEnabled(true);
+				progressBar.setIndeterminate(true);
+				stopButton.setEnabled(false);
+				taskWorker.cancel(true);
+				taskWorker = null;
 			}
 		});
 		

@@ -37,6 +37,11 @@ public class FolderPicked {
 			int fileCount = fileList.length;
 			MainUI.setFileCount(fileCount);
 			for (int i = 0; i < fileCount; i++) {
+				
+		        if (Thread.interrupted()) {
+		            // Oh Shit! We've been interrupted...GTFO
+		            return;
+		        }
 				System.out.println(fileList[i]);
 				String fileName = fileList[i].getName(); 
 				int linksReplaced = ReplaceLinks.main(fileName, folderPdf, findStr, replaceStr, pushFolderStr);

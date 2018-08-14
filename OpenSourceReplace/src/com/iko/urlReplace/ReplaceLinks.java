@@ -28,8 +28,13 @@ public class ReplaceLinks {
 	    
 
 	    int n = reader.getNumberOfPages(); 
-	    System.out.println("Starting page loop");
+//	    System.out.println("Starting page loop");
 	    for (int i=1; i <= n; i++) {
+	    	
+	        if (Thread.interrupted()) {
+	            // Oh Shit! We've been interrupted...GTFO
+	            return -1;
+	        }
 	
 	    	PdfDictionary pageDic = reader.getPageN(i); 
 	    	PdfArray annots = pageDic.getAsArray(PdfName.ANNOTS);   
@@ -39,6 +44,11 @@ public class ReplaceLinks {
 			for (PdfObject annot : annots.getElements()) {
 				Boolean foundLink = false;
 	 			PdfDictionary annotDict = (PdfDictionary)PdfReader.getPdfObject(annot); 
+	 			
+		        if (Thread.interrupted()) {
+		            // Oh Shit! We've been interrupted...GTFO
+		            return -1;
+		        }
 	 			
 	 			if (annotDict.get(PdfName.SUBTYPE).equals(PdfName.LINK)) {
 //	 				System.out.println("a link"); 
@@ -58,12 +68,17 @@ public class ReplaceLinks {
 	 			if (foundLink) {
 	 				PdfDictionary annotAction = (PdfDictionary)PdfReader.getPdfObject(annotDict.get(PdfName.A));
 	 				if (annotAction.get(PdfName.S).equals(PdfName.URI)) {
-	 					replaceNum++;
+	 					
 	 	 				String oldURL = annotAction.getAsString(PdfName.URI).toString();
 //	 	 				System.out.println(oldURL);
 	 	 				newURL = oldURL.replace(findStr, replaceStr);
+	 	 				
+	 	 				if (newURL != oldURL) {
+	 	 					annotAction.put(PdfName.URI, new PdfString(newURL));
+	 	 					replaceNum++;
+	 	 				}
 	// 	 				"?event=loadapp", "?mobile=false&event=loadapp"
-	 	 				annotAction.put(PdfName.URI, new PdfString(newURL));
+	 	 				
 	 				}
 	 			}
 	 		}
