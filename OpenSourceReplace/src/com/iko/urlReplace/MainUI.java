@@ -1,5 +1,4 @@
 package com.iko.urlReplace;
-import java.awt.*;       // Using AWT layouts
 import java.io.File;
 import java.io.FilenameFilter;
 import java.nio.file.Files;
@@ -7,6 +6,9 @@ import static java.nio.file.StandardCopyOption.*;
 import java.util.List;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Insets;
 
 import javax.swing.JButton;
