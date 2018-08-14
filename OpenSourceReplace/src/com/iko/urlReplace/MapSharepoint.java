@@ -20,8 +20,9 @@ public class MapSharepoint {
 				{"GK",  "http://operations.connect.na.local/support/Reliability/IGBrampton/IGBramptonAssetDocuments"},
 				{"GS",  "http://operations.connect.na.local/support/Reliability/IKOSylacauga/SylacaugaAssetDocuments"},
 				{"GR",  "http://operations.connect.na.local/support/Reliability/Bramcal/Plant Asset Documents"},
+				{"Test","http://operations.connect.na.local/support/Reliability/ReliabilityShared/Pages/TestFiles"}
 				//this array needs to have the same order of sites as the drop down.
-				//this lets us avoid a for loop
+				//which lets us avoid a for loop
 		};
 
 		command = "net use B: \"".concat(siteURL[siteIndex][1].concat("\""));

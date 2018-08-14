@@ -5,11 +5,20 @@ import java.io.FilenameFilter;
 
 
 public class FolderPicked {
-	public static void main(String folderPdf, String findStr, String replaceStr) throws Exception {
+	public static void main(String folderPdf, String findStr, String replaceStr, String pushFolderStr) throws Exception {
+		System.out.println("running FolderPicked");
 		if (!folderPdf.endsWith("\\")) {
 			folderPdf = folderPdf.concat("\\");
 		}
-//		System.out.println(folderPdf);
+		
+		if (pushFolderStr == "") {
+			pushFolderStr = folderPdf.concat("push\\");
+			System.out.println("no folder specified using ./push");
+		}else {
+			System.out.println("sharepoint folder yah?");
+		}
+		
+		System.out.println(folderPdf);
 		File workingFolder = new File(folderPdf);
 		if (workingFolder.exists()){
 			File[] fileList = workingFolder.listFiles(new FilenameFilter() {
@@ -18,22 +27,24 @@ public class FolderPicked {
 					return name.toLowerCase().endsWith(".pdf");
 				}
 			});
-			File pushFolder = new File(folderPdf.concat("push\\"));
+			
+			File pushFolder = new File(pushFolderStr);
+			
 			if (!pushFolder.exists()) {
 				pushFolder.mkdir();
-//				System.out.println("Making Dir");
+				System.out.println("Making Dir");
 			}
 			int fileCount = fileList.length;
 			MainUI.setFileCount(fileCount);
 			for (int i = 0; i < fileCount; i++) {
-//				System.out.println(fileList[i]);
+				System.out.println(fileList[i]);
 				String fileName = fileList[i].getName(); 
-				int linksReplaced = ReplaceLinks.main(fileName, folderPdf, findStr, replaceStr);
+				int linksReplaced = ReplaceLinks.main(fileName, folderPdf, findStr, replaceStr, pushFolderStr);
 				MainUI.remoteSetProgress(new MainUI.FileProgressInfo(i + 1, linksReplaced, fileName));
 				if (linksReplaced > 0) {
-//					System.out.println("File Changed");
+					System.out.println("File Changed");
 				}else {
-//					System.out.println("File Didn't Change, Delete");
+					System.out.println("File Didn't Change, Delete");
 					File deleteFile = new File(folderPdf.concat("push\\").concat(fileName));
 					if (!deleteFile.delete()) {
 						System.out.println("Problem Deleting File");
@@ -41,8 +52,5 @@ public class FolderPicked {
 				}
 			}
 		}
-		
-		
-//		return fileCount;
 	}
 }

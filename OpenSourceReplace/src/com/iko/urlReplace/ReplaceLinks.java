@@ -10,7 +10,7 @@ import com.lowagie.text.pdf.PdfStamper;
 import com.lowagie.text.pdf.PdfString;
 
 public class ReplaceLinks {
-	public static int main(String fileNamePDF, String filePathFolder, String findStr, String replaceStr) throws Exception { 
+	public static int main(String fileNamePDF, String filePathFolder, String findStr, String replaceStr, String outputFolder) throws Exception { 
 		//this essentially declares this part of the code as executable, and to not exit if errors are made
 //		System.out.println(fileNamePDF);
 //		System.out.println(filePathFolder);
@@ -18,7 +18,7 @@ public class ReplaceLinks {
 //		System.out.println(replaceStr);
 			
 		String base = filePathFolder.concat(fileNamePDF);
-		String dest = filePathFolder.concat("push\\").concat(fileNamePDF);
+		String dest = outputFolder.concat(fileNamePDF);
 //		System.out.println(base);
 //		System.out.println(dest);
 		int replaceNum = 0;

@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 public class TestCases {
 	@Test
 	public void testFolderPicked() throws Exception {
-		FolderPicked.main("C:\\Users\\majona\\Desktop\\DNATools\\CA", "event", "It worked!!!");
+		FolderPicked.main("C:\\Users\\majona\\Desktop\\DNATools\\CA", "event", "It worked!!!", "");
 	}
 
 //	public void mappingTest() throws Exception {

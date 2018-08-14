@@ -14,7 +14,7 @@ public class FilesPicked {
 		int filesDone = 0;
 		for (File thisFile : multiFiles) {
 			filesDone++;
-			int linksReplaced = ReplaceLinks.main(thisFile.getName(), theFolder, findStr, replaceStr);
+			int linksReplaced = ReplaceLinks.main(thisFile.getName(), theFolder, findStr, replaceStr, theFolder.concat("\\push"));
 			if (linksReplaced > 0) {
 //				System.out.println("success");
 			}else {
