@@ -1,4 +1,4 @@
-package com.iko.urlReplace;
+package com.jonathanmajh.urlReplace;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.nio.file.Files;
@@ -420,7 +420,7 @@ public class MainUI extends JFrame {
 	}
 
 	public static void addText(String textInput) {
-		taskOutput.append(textInput.concat("haha\n"));
+		taskOutput.append(textInput.concat("\n"));
 		System.out.println("added: ".concat(textInput));
 	}
 

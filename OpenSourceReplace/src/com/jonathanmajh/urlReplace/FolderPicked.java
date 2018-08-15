@@ -1,4 +1,4 @@
-package com.iko.urlReplace;
+package com.jonathanmajh.urlReplace;
 
 import java.io.File;
 import java.io.FilenameFilter;
