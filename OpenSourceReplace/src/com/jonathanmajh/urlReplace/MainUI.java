@@ -7,15 +7,18 @@ import java.util.List;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Component;
+import java.awt.Desktop;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
@@ -39,6 +42,7 @@ public class MainUI extends JFrame {
 	private JButton unmapButton;
 	private JButton startButton;
 	private JButton stopButton;
+	private JCheckBox replaceButton;
 	private static JProgressBar progressBar;
 	private static JTextArea taskOutput;
 	private TaskForThing taskWorker;
@@ -94,30 +98,41 @@ public class MainUI extends JFrame {
 			    taskOutput.append("Using temporary directory " + tempDir + "\n");
 			    FolderPicked.main("B:\\", searchStr.getText(), replaceStr.getText(), tempDir);
 			    
-			    statusLabel.setText("Copying File to Sharepoint...");
+			    if (replaceButton.isSelected()) {
 			    
-			    File newFolder = new File(tempDir);
-			    if (newFolder.exists()) {
-			    	File[] fileList = newFolder.listFiles(new FilenameFilter() {
-			    		@Override
-							public boolean accept(File newFolder, String name) {
-								return name.toLowerCase().endsWith(".pdf");
-							}
-			    	});
-//			    	File pushFolder = new File("B:\\");
-			    	int newFileCount = fileList.length;
-			    	File destFile;
-			    	for (int i = 0; i < newFileCount; i++) {
-			    		destFile = new File("B:\\".concat(fileList[i].getName()));
-			    		progressBar.setValue((i + 1)*100/newFileCount);
-			    		taskOutput.append("File: " + fileList[i].getName() + "\n");
-			    		Files.copy(fileList[i].toPath(), destFile.toPath(), REPLACE_EXISTING);
-			    		Files.delete(fileList[i].toPath());
-			    	}
+				    statusLabel.setText("Copying File to Sharepoint...");
+				    
+				    File newFolder = new File(tempDir);
+				    if (newFolder.exists()) {
+				    	File[] fileList = newFolder.listFiles(new FilenameFilter() {
+				    		@Override
+								public boolean accept(File newFolder, String name) {
+									return name.toLowerCase().endsWith(".pdf");
+								}
+				    	});
+	//			    	File pushFolder = new File("B:\\");
+				    	int newFileCount = fileList.length;
+				    	File destFile;
+				    	for (int i = 0; i < newFileCount; i++) {
+				    		destFile = new File("B:\\".concat(fileList[i].getName()));
+				    		progressBar.setValue((i + 1)*100/newFileCount);
+				    		taskOutput.append("File: " + fileList[i].getName() + "\n");
+				    		Files.copy(fileList[i].toPath(), destFile.toPath(), REPLACE_EXISTING);
+				    		Files.delete(fileList[i].toPath());
+				    	}
+				    }
 			    }
-			    
 				MapSharepoint.unmap();
 				taskOutput.append("unmapping Sharepoint from B:\\ \n");
+
+			    Desktop.getDesktop().open(new File(tempDir));
+			    Desktop.getDesktop().browse(MapSharepoint.getSharpointURL(siteDrop.getSelectedIndex()));
+			    
+			    if (!replaceButton.isSelected()) {
+				    Desktop.getDesktop().open(new File(tempDir));
+				    JOptionPane.showMessageDialog(null, "Please Copy Files into B:/ then Press Enter", "InfoBox", JOptionPane.INFORMATION_MESSAGE);
+			    }
+			    
 
 			}
 		
@@ -286,15 +301,21 @@ public class MainUI extends JFrame {
 		c2.gridx = 0;
 		c2.gridy = 0;
 		c2.weightx = 0.5;
-		c2.weighty = 1.0;
+		c2.weighty = 0.5;
 		c2.insets = new Insets(0, 0, 0, 0);
 		autoOps.add(startButton, c2);
 		
 		stopButton = new JButton("Stop");
 		stopButton.setEnabled(false);
-		c2.gridx = 2;
+		c2.gridx = 1;
 		c2.gridy = 0;
 		autoOps.add(stopButton, c2);
+		
+	    replaceButton = new JCheckBox("Autocopy. Removes Revision History! Still Requires Check In!");
+	    replaceButton.setSelected(false);
+	    c2.gridx = 0;
+	    c2.gridy = 1;
+	    autoOps.add(replaceButton, c2);
 		
 		tabbedPane.addTab("Automatic", null, autoOps, "Pick a Site, then Specific the Strings");
 		tabbedPane.addTab("Manual", null, manOps, "Options for manually Updating PDFs");
